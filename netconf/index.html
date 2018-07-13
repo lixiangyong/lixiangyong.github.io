@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="关于使用libnetconf自定义RPC的问题记录1. SDN-C采集性能数据失败SDN-C控制器通过RPC方法采集vCPE性能数据失败，已知信息如下所示： 下发的rpc消息：1234567&amp;lt;rpc xmlns=&quot;urn:ietf:params:xml:ns:netconf:base:1.0&quot; message-id=&quot;2&quot;&amp;gt; &amp;lt;getdataflow  xmlns=&quot;http:/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/netconf/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="关于使用libnetconf自定义RPC的问题记录1. SDN-C采集性能数据失败SDN-C控制器通过RPC方法采集vCPE性能数据失败，已知信息如下所示： 下发的rpc消息：1234567&amp;lt;rpc xmlns=&quot;urn:ietf:params:xml:ns:netconf:base:1.0&quot; message-id=&quot;2&quot;&amp;gt; &amp;lt;getdataflow  xmlns=&quot;http:/">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-13T09:48:44.916Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="关于使用libnetconf自定义RPC的问题记录1. SDN-C采集性能数据失败SDN-C控制器通过RPC方法采集vCPE性能数据失败，已知信息如下所示： 下发的rpc消息：1234567&amp;lt;rpc xmlns=&quot;urn:ietf:params:xml:ns:netconf:base:1.0&quot; message-id=&quot;2&quot;&amp;gt; &amp;lt;getdataflow  xmlns=&quot;http:/">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/netconf/"/>
+
+
+
+
+
+  <title> | Hexo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-netconf">
+          <a href="/netconf" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            netconf
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <h1 id="关于使用libnetconf自定义RPC的问题记录"><a href="#关于使用libnetconf自定义RPC的问题记录" class="headerlink" title="关于使用libnetconf自定义RPC的问题记录"></a>关于使用libnetconf自定义RPC的问题记录</h1><h2 id="1-SDN-C采集性能数据失败"><a href="#1-SDN-C采集性能数据失败" class="headerlink" title="1. SDN-C采集性能数据失败"></a>1. SDN-C采集性能数据失败</h2><p>SDN-C控制器通过RPC方法采集vCPE性能数据失败，已知信息如下所示：</p>
+<h3 id="下发的rpc消息："><a href="#下发的rpc消息：" class="headerlink" title="下发的rpc消息："></a>下发的rpc消息：</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">rpc</span> <span class="attr">xmlns</span>=<span class="string">"urn:ietf:params:xml:ns:netconf:base:1.0"</span> <span class="attr">message-id</span>=<span class="string">"2"</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">getdataflow</span>  <span class="attr">xmlns</span>=<span class="string">"http://www.raisecom.com/cloudvpn"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">entrys</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">entry-name</span>&gt;</span>cloud<span class="tag">&lt;/<span class="name">entry-name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">entrys</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">getdataflow</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">rpc</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="返回的rpc-reply消息"><a href="#返回的rpc-reply消息" class="headerlink" title="返回的rpc-reply消息"></a>返回的rpc-reply消息</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">rpc-reply</span> <span class="attr">xmlns</span>=<span class="string">"urn:ietf:params:xml:ns:netconf:base:1.0"</span> <span class="attr">message-id</span>=<span class="string">"2"</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">data</span>  <span class="attr">xmlns</span>=<span class="string">"urn:ietf:params:xml:ns:netconf:base:1.0"</span>&gt;</span> </span><br><span class="line">  <span class="tag">&lt;<span class="name">dataflow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">entrys</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">entryname</span>&gt;</span>cloud<span class="tag">&lt;/<span class="name">entryname</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">leftBandwidth</span>&gt;</span>0<span class="tag">&lt;/<span class="name">leftBandwidth</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">leftTotalFlow</span>&gt;</span>0<span class="tag">&lt;/<span class="name">leftTotalFlow</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">rightBandwidth</span>&gt;</span>0<span class="tag">&lt;/<span class="name">rightBandwidth</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">rightTotalFlow</span>&gt;</span>0<span class="tag">&lt;/<span class="name">rightTotalFlow</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">time-stamp</span>&gt;</span>1516095468<span class="tag">&lt;/<span class="name">time-stamp</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">entrys</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dataflow</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">rpc-reply</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="返回的错误："><a href="#返回的错误：" class="headerlink" title="返回的错误："></a>返回的错误：</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">errors</span> <span class="attr">xmlns</span>=<span class="string">"urn:ietf:params:xml:ns:yang:ietf-restconf"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">error</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">error-type</span>&gt;</span>application<span class="tag">&lt;/<span class="name">error-type</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">error-tag</span>&gt;</span>operation-failed<span class="tag">&lt;/<span class="name">error-tag</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">error-message</span>&gt;</span>The operation encountered an unexpected error while executing.<span class="tag">&lt;/<span class="name">error-message</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">error-info</span>&gt;</span>java.lang.IllegalStateException: Unknown child(ren) node(s) detected, identified by: (urn:ietf:params:xml:ns:netconf:base:1.0)data, in: RPC Output output</span><br><span class="line">    at com.google.common.base.Preconditions.checkState(Preconditions.java:197)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils.findSchemaForChild(SchemaUtils.java:109)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils.findSchemaForChild(SchemaUtils.java:91)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils.findSchemaForChild(SchemaUtils.java:97)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.transform.base.parser.ContainerNodeBaseParser.getSchemaForChild(ContainerNodeBaseParser.java:57)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.transform.base.parser.ContainerNodeBaseParser.getSchemaForChild(ContainerNodeBaseParser.java:29)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.transform.base.parser.BaseDispatcherParser.parse(BaseDispatcherParser.java:160)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.transform.base.parser.ContainerNodeBaseParser.parse(ContainerNodeBaseParser.java:47)</span><br><span class="line">    at org.opendaylight.yangtools.yang.data.impl.schema.transform.base.parser.ContainerNodeBaseParser.parse(ContainerNodeBaseParser.java:29)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.schema.mapping.NetconfMessageTransformer.toRpcResult(NetconfMessageTransformer.java:362)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.schema.mapping.NetconfMessageTransformer.toRpcResult(NetconfMessageTransformer.java:72)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.sal.NetconfDeviceRpc$2.apply(NetconfDeviceRpc.java:69)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.sal.NetconfDeviceRpc$2.apply(NetconfDeviceRpc.java:65)</span><br><span class="line">    at com.google.common.util.concurrent.Futures$2.apply(Futures.java:760)</span><br><span class="line">    at com.google.common.util.concurrent.Futures$ChainingListenableFuture.run(Futures.java:906)</span><br><span class="line">    at com.google.common.util.concurrent.MoreExecutors$DirectExecutor.execute(MoreExecutors.java:457)</span><br><span class="line">    at com.google.common.util.concurrent.ExecutionList.executeListener(ExecutionList.java:156)</span><br><span class="line">    at com.google.common.util.concurrent.ExecutionList.execute(ExecutionList.java:145)</span><br><span class="line">    at com.google.common.util.concurrent.AbstractFuture.set(AbstractFuture.java:185)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.listener.UncancellableFuture.set(UncancellableFuture.java:44)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.listener.NetconfDeviceCommunicator.processMessage(NetconfDeviceCommunicator.java:295)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.listener.NetconfDeviceCommunicator.onMessage(NetconfDeviceCommunicator.java:237)</span><br><span class="line">    at org.opendaylight.netconf.sal.connect.netconf.listener.NetconfDeviceCommunicator.onMessage(NetconfDeviceCommunicator.java:47)</span><br><span class="line">    at org.opendaylight.netconf.nettyutil.AbstractNetconfSession.handleMessage(AbstractNetconfSession.java:64)</span><br><span class="line">    at org.opendaylight.netconf.nettyutil.AbstractNetconfSession.handleMessage(AbstractNetconfSession.java:35)</span><br><span class="line">    at org.opendaylight.protocol.framework.AbstractProtocolSession.channelRead0(AbstractProtocolSession.java:53)</span><br><span class="line">    at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:105)</span><br><span class="line">    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:318)</span><br><span class="line">    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:304)</span><br><span class="line">    at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:276)</span><br><span class="line">    at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:263)</span><br><span class="line">    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:318)</span><br><span class="line">    at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:304)</span><br><span class="line">    at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:276)</span><br><span class="line">    at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:263)</span><br><span class="line">    at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:318)</span><br><span class="line">    at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:42)</span><br><span class="line">    at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:309)</span><br><span class="line">    at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:358)</span><br><span class="line">    at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:357)</span><br><span class="line">    at io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:112)</span><br><span class="line">    at io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:137)</span><br><span class="line">    at java.lang.Thread.run(Thread.java:748)</span><br><span class="line"><span class="tag">&lt;/<span class="name">error-info</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">error</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">errors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="分析："><a href="#分析：" class="headerlink" title="分析："></a>分析：</h3><p>我们自定义RPC如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"> 	rpc getdataflow &#123;</span><br><span class="line">	description</span><br><span class="line">	  <span class="string">"Get the tenant data flowing."</span>;</span><br><span class="line">	input &#123;</span><br><span class="line">		<span class="built_in">list</span> entrys &#123;</span><br><span class="line">			key <span class="string">"entry-name"</span>;</span><br><span class="line">			</span><br><span class="line">			leaf entry-name &#123;</span><br><span class="line">				type <span class="built_in">string</span>;</span><br><span class="line">				mandatory <span class="literal">true</span>;</span><br><span class="line">				description</span><br><span class="line">				<span class="string">"the name of service."</span>;</span><br><span class="line">			&#125;	  </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	output &#123;</span><br><span class="line">		container dataflow &#123;</span><br><span class="line">			<span class="built_in">list</span> entrys &#123;</span><br><span class="line">				key <span class="string">"entryname"</span>;</span><br><span class="line">				</span><br><span class="line">				leaf entryname &#123;</span><br><span class="line">					type <span class="built_in">string</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf leftBandwidth &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf leftTotalFlow &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf rightBandwidth &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf rightTotalwidth &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf time-stamp &#123;</span><br><span class="line">					type yang:date-<span class="keyword">and</span>-time;</span><br><span class="line">                &#125;				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>根据上面定义的RPC中output和rpc-reply的消息来看，没有什么问题，但是从SDN-C返回的错误来看，SDN-C不识别rpc-reply中的data节点。<br>那就有个问题，在处理RPC方法reply的时候，调用的都是libnetconf提供的接口</p>
+<h4 id="libnetconf提供的reply的接口："><a href="#libnetconf提供的reply的接口：" class="headerlink" title="libnetconf提供的reply的接口："></a>libnetconf提供的reply的接口：</h4><ul>
+<li>nc_reply_data()</li>
+<li>ncxml_reply_data()</li>
+<li>nc_reply_data_ns()</li>
+<li>ncxml_reply_data_ns()</li>
+<li>…<blockquote>
+<p>而这些接口都是带data的</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="背景："><a href="#背景：" class="headerlink" title="背景："></a>背景：</h4><p>我们在使用的时候，也都是直接调用这些接口去reply的，在自测试的时候，都是使用的是netopeer-server和netopeer-cli，顶多就是EMS/ASC(Juniper提供的客户端)，而不是真正意义上的SDN-C（目前来看，libnetconf对于RPC这块的支持不是很好，没有根据标准的netconf协议来对reply做校验），因此，自测试不会报错。而和北京联调采集vCPE性能数据的时候，北京使用的是SDN-C，SDN-C是完全按照netconf协议的。</p>
+<h4 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h4><p>我们在RPC定义的output中加入data节点：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"> 	rpc getdataflow &#123;</span><br><span class="line">	description</span><br><span class="line">	  <span class="string">"Get the tenant data flowing."</span>;</span><br><span class="line">	input &#123;</span><br><span class="line">		<span class="built_in">list</span> entrys &#123;</span><br><span class="line">			key <span class="string">"entry-name"</span>;</span><br><span class="line">			</span><br><span class="line">			leaf entry-name &#123;</span><br><span class="line">				type <span class="built_in">string</span>;</span><br><span class="line">				mandatory <span class="literal">true</span>;</span><br><span class="line">				description</span><br><span class="line">				<span class="string">"the name of service."</span>;</span><br><span class="line">			&#125;	  </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	output &#123;</span><br><span class="line">	  container data &#123;</span><br><span class="line">		container dataflow &#123;</span><br><span class="line">			<span class="built_in">list</span> entrys &#123;</span><br><span class="line">				key <span class="string">"entryname"</span>;</span><br><span class="line">				</span><br><span class="line">				leaf entryname &#123;</span><br><span class="line">					type <span class="built_in">string</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf leftBandwidth &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf leftTotalFlow &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf rightBandwidth &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf rightTotalwidth &#123;</span><br><span class="line">					type uint64;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				leaf time-stamp &#123;</span><br><span class="line">					type yang:date-<span class="keyword">and</span>-time;</span><br><span class="line">                &#125;				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样进行了测试之后，发现SDN-C是可以识别reply的。<br>那这个问题就简单了，有两种做法：</p>
+<ol>
+<li>每次写RPC的output时，在需要返回的内容外包一层container data即可。</li>
+<li>能不能在reply的时候去掉这个data，如果可以去掉，那对以后写RPC就很方便了。<blockquote>
+<p>那么，这个data到底是否需要呢？</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="data在RPC里output中是否需要？"><a href="#data在RPC里output中是否需要？" class="headerlink" title="data在RPC里output中是否需要？"></a>data在RPC里output中是否需要？</h4><p>需要回答这个问题，很简单，可以直接翻看netconf协议，看官方文档中是如何描述的。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[rfc <span class="number">6020</span>]</span><br><span class="line"><span class="number">4.2</span><span class="number">.9</span>. RPC Definitions</span><br><span class="line">YANG allows the definition of NETCONF RPCs. The operations’ names,</span><br><span class="line">input parameters, <span class="keyword">and</span> output parameters are modeled <span class="keyword">using</span> YANG data</span><br><span class="line">definition statements.</span><br><span class="line">YANG Example:</span><br><span class="line">rpc activate-software-image &#123;</span><br><span class="line">   input &#123;</span><br><span class="line">       leaf image-name &#123;</span><br><span class="line">           type <span class="built_in">string</span>;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    output &#123;</span><br><span class="line">       leaf status &#123;</span><br><span class="line">            type <span class="built_in">string</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">NETCONF XML Example:</span><br><span class="line">&lt;rpc message-id=<span class="string">"101"</span></span><br><span class="line">xmlns=<span class="string">"urn:ietf:params:xml:ns:netconf:base:1.0"</span>&gt;</span><br><span class="line">    &lt;activate-software-image xmlns=<span class="string">"http://acme.example.com/system"</span>&gt;</span><br><span class="line">        &lt;image-name&gt;acmefw<span class="number">-2.3</span>&lt;/image-name&gt;</span><br><span class="line">    &lt;/activate-software-image&gt;</span><br><span class="line">&lt;/rpc&gt;</span><br><span class="line">&lt;rpc-reply message-id=<span class="string">"101"</span></span><br><span class="line">xmlns=<span class="string">"urn:ietf:params:xml:ns:netconf:base:1.0"</span>&gt;</span><br><span class="line">    &lt;status xmlns=<span class="string">"http://acme.example.com/system"</span>&gt;</span><br><span class="line">    The image acmefw<span class="number">-2.3</span> is being installed.</span><br><span class="line">    &lt;/status&gt;</span><br><span class="line">&lt;/rpc-reply&gt;</span><br></pre></td></tr></table></figure></p>
+<p>从rfc给的rpc example来看，rpc-reply不带data，那就跟着标准协议走。</p>
+<h3 id="解决方法1："><a href="#解决方法1：" class="headerlink" title="解决方法1："></a>解决方法1：</h3><p>通过在github上查找答案得之，libnetconf当前对自定义RPC支持不是很好，具体可以查看<br><a href="https://github.com/CESNET/netopeer/issues/120" target="_blank" rel="noopener">github</a>上作者的回答，最终给出的结论是使用nc_reply_build()这个接口，查了一下函数原型：</p>
+<blockquote>
+<p>nc_reply<em> nc_reply_build(const char</em> reply_dump);</p>
+</blockquote>
+<p>函数入参为const char*，那么 reply_dump需要自己去拼接xml字符串。通过验证，这样做是可行的（不带data的rpc-reply）。</p>
+<p>那么就有一个问题，采集一条业务的流量带宽信息可以使用字符串拼接的方法，那么采集10条、100条难道也是用拼接吗？所以就有了方法2。</p>
+<h3 id="解决方法2："><a href="#解决方法2：" class="headerlink" title="解决方法2："></a>解决方法2：</h3><p>libnetconf中提供了返回data的reply，那么我们看一下源代码，看这些个方法是怎么实现的，以ncxml_reply_data_ns()为例：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">API nc_reply *<span class="title">ncxml_reply_data_ns</span><span class="params">(<span class="keyword">const</span> xmlNodePtr data, <span class="keyword">const</span> <span class="keyword">char</span>* ns)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	nc_reply *reply;</span><br><span class="line">	xmlNodePtr content;</span><br><span class="line">	xmlNsPtr xmlns;</span><br><span class="line"></span><br><span class="line">	content = xmlNewNode(<span class="literal">NULL</span>, BAD_CAST <span class="string">"data"</span>);</span><br><span class="line">	<span class="keyword">if</span> (content == <span class="literal">NULL</span>) &#123;</span><br><span class="line">		ERROR(<span class="string">"xmlNewNode failed (%s:%d)."</span>, __FILE__, __LINE__);</span><br><span class="line">		<span class="keyword">return</span> (<span class="literal">NULL</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (data &amp;&amp; xmlAddChildList(content, xmlCopyNodeList(data)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">		ERROR(<span class="string">"xmlAddChildList failed (%s:%d)."</span>, __FILE__, __LINE__);</span><br><span class="line">		xmlFreeNode(content);</span><br><span class="line">		<span class="keyword">return</span> (<span class="literal">NULL</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* set namespace */</span></span><br><span class="line">	xmlns = xmlNewNs(content, (xmlChar *) ns, <span class="literal">NULL</span>);</span><br><span class="line">	xmlSetNs(content, xmlns);</span><br><span class="line"></span><br><span class="line">	reply = (nc_reply*)nc_msg_create(content,<span class="string">"rpc-reply"</span>);</span><br><span class="line">	reply-&gt;type.reply = NC_REPLY_DATA;</span><br><span class="line">	xmlFreeNode(content);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> (reply);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从代码中可以看到，我们在调用这个接口reply的时候，会自动加上data这个节点，那么我们给它去掉即可。<br>我们仿照这个代码，写一个ncxml_reply_no_data_ns()的接口，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">API nc_reply *<span class="title">ncxml_reply_no_data_ns</span><span class="params">(<span class="keyword">const</span> xmlNodePtr data, <span class="keyword">const</span> <span class="keyword">char</span>* ns)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	nc_reply *reply;</span><br><span class="line">	xmlNsPtr xmlns;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* set namespace */</span></span><br><span class="line">	xmlns = xmlNewNs(data, (xmlChar *) ns, <span class="literal">NULL</span>);</span><br><span class="line">	xmlSetNs(data, xmlns);</span><br><span class="line"></span><br><span class="line">	reply = (nc_reply*)nc_msg_create(data, <span class="string">"rpc-reply"</span>);</span><br><span class="line">	reply-&gt;type.reply = NC_REPLY_DATA;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> (reply);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一切都是这么顺利的进行，没有问题，但是在最后测试时候，每次netopeer-cli下发获取流量的rpc时，netopeer-server就会宕机。</p>
+<h4 id="小背景："><a href="#小背景：" class="headerlink" title="小背景："></a>小背景：</h4><p>在说明这个问题之前，我先说明一下程序的编译环境和运行环境：</p>
+<p>如上图所示，运行我们的cloudvpn程序，需要netopeer、libnetconf、cloudvpn三个模块：</p>
+<ol>
+<li>netopeer:在VM1上编译；</li>
+<li>libnetconf:加入ncxml_reply_no_data_ns()在VM2上面编译；</li>
+<li>cloudvpn:在VM3上面编译</li>
+</ol>
+<blockquote>
+<p>注：cloudvpn编译和netopeer编译&amp;运行都需要依赖libnetconf</p>
+</blockquote>
+<p>最终所有的程序在VM4上运行。</p>
+<h4 id="netopeer-server宕机问题："><a href="#netopeer-server宕机问题：" class="headerlink" title="netopeer-server宕机问题："></a>netopeer-server宕机问题：</h4><p>通过产生的core文件来看：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">0</span>  <span class="number">0x00007f833e8ad47d</span> <span class="function">in <span class="title">ncds_apply_rpc</span> <span class="params">(id=<span class="number">1681692778</span>, session=session@entry=<span class="number">0x7f8330005cb0</span>, rpc=rpc@entry=<span class="number">0x7f8330005460</span>, </span></span></span><br><span class="line">    shared_filter=shared_filter@entry=0x0) at src/datastore.c:6367</span><br><span class="line">#1  0x00007f833e8afcd1 in ncds_apply_rpc2all (session=0x7f8330005cb0, rpc=0x7f8330005460, ids=0x0) at src/datastore.c:6589</span><br><span class="line">#<span class="number">2</span>  <span class="number">0x0000000000408970</span> <span class="function">in <span class="title">np_ssh_client_netconf_rpc</span> <span class="params">()</span></span></span><br><span class="line">#3  0x0000000000404362 in client_main_thread ()</span><br><span class="line">#4  0x00007f833e2f9dc5 in start_thread () from /lib64/libpthread.so.0</span><br><span class="line">#5  0x00007f833e026ced in clone () from /lib64/libc.so.6</span><br></pre></td></tr></table></figure></p>
+<p>找到在libnetconf中调用rpc的地方:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> NC_OP_UNKNOWN:</span><br><span class="line">	<span class="comment">/* get operation name */</span></span><br><span class="line">	op_name = nc_rpc_get_op_name (rpc);</span><br><span class="line">       </span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">"==%s, %d.\n"</span>, __func__, __LINE__);</span><br><span class="line">	<span class="comment">/* prepare for case RPC is not supported by this datastore */</span></span><br><span class="line">	reply = NCDS_RPC_NOT_APPLICABLE;</span><br><span class="line">	<span class="comment">/* go through all RPC implemented by datastore's transAPI modules */</span></span><br><span class="line">	<span class="keyword">for</span> (tapi_iter = ds-&gt;transapis; tapi_iter != <span class="literal">NULL</span>; tapi_iter = tapi_iter-&gt;next) &#123;</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; tapi_iter-&gt;tapi-&gt;rpc_clbks-&gt;callbacks_count; i++) &#123;</span><br><span class="line">			<span class="comment">/* find matching rpc and call rpc callback function */</span></span><br><span class="line">			rpc_name = tapi_iter-&gt;tapi-&gt;rpc_clbks-&gt;callbacks[i].name;</span><br><span class="line">			<span class="keyword">if</span> (<span class="built_in">strcmp</span>(op_name, rpc_name) == <span class="number">0</span>) &#123;</span><br><span class="line">			    nc_verb_verbose(<span class="string">"rpc_name:%s"</span>, rpc_name);</span><br><span class="line">				<span class="comment">/* get operation node */</span></span><br><span class="line">				op_node = ncxml_rpc_get_op_content(rpc);</span><br><span class="line">				op_input = xmlCopyNodeList(op_node-&gt;children);</span><br><span class="line">				xmlFreeNode(op_node);</span><br><span class="line"></span><br><span class="line">				<span class="comment">/* call RPC callback function */</span></span><br><span class="line">				VERB(<span class="string">"Calling %s RPC function\n"</span>, rpc_name);</span><br><span class="line">				<span class="comment">/* 请注意这里reply*/</span></span><br><span class="line">				reply = tapi_iter-&gt;tapi-&gt;rpc_clbks-&gt;callbacks[i].func(op_input);</span><br><span class="line">				VERB(<span class="string">"reply[%p]\n"</span>, reply);</span><br><span class="line">				xmlFreeNodeList(op_input);</span><br><span class="line"></span><br><span class="line">				<span class="comment">/* end RPC search, there can be only one RPC with name == op_name */</span></span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (i &gt;= tapi_iter-&gt;tapi-&gt;rpc_clbks-&gt;callbacks_count) &#123;</span><br><span class="line">			<span class="comment">/* propagate break to outer for loop */</span></span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">free</span>(op_name);</span><br><span class="line">	<span class="keyword">break</span>;</span><br></pre></td></tr></table></figure></p>
+<p>调用rpc方法返回一个结构体指针，nc_reply* reply；<br>返回的reply在下面使用的时候宕机了。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* if transapi used, rpc affected running and succeeded get its actual content */</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * skip transapi if &lt;edit-config&gt; was performed with test-option set</span></span><br><span class="line"><span class="comment"> * to test-only value</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">if</span> (ds-&gt;transapis != <span class="literal">NULL</span> &amp;&amp; ds-&gt;tapi_callbacks_count</span><br><span class="line">	&amp;&amp; (op == NC_OP_COMMIT || op == NC_OP_COPYCONFIG || (op == NC_OP_EDITCONFIG &amp;&amp; (nc_rpc_get_testopt(rpc) != NC_EDIT_TESTOPT_TEST))) &amp;&amp;</span><br><span class="line">	(nc_rpc_get_target(rpc) == NC_DATASTORE_RUNNING &amp;&amp; nc_reply_get_type(reply) == NC_REPLY_OK)) &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (op == NC_OP_EDITCONFIG) &#123;</span><br><span class="line">		erropt = nc_rpc_get_erropt(rpc);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123; <span class="comment">/* commit or copy-config */</span></span><br><span class="line">		<span class="comment">/* try rollback to keep transactions atomic */</span></span><br><span class="line">		erropt = NC_EDIT_ERROPT_ROLLBACK;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ((new_reply = ncds_apply_transapi(ds, session, old, erropt, <span class="literal">NULL</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">		nc_reply_free(reply);</span><br><span class="line">		reply = new_reply;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在上面代码中调用nc_reply_get_type(reply)产生宕机，说明返回的reply的指针不对或者是NULL，后经加入判断，发现reply指针不是NULL。那么解决这个问题只需要把这个reply地址打出来就好。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> start netopeer_send_info_to_ipsec.</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> end netopeer_send_info_to_ipsec.</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> enter recv_bandwidth_msg_from_ipsec.</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span>  stReplyNum.usMsgNum[<span class="number">1</span>]</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> end recv_throughput_msg_from_ipsec</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> ncxml_reply_no_data_ns, reply[<span class="number">0x7feaf000dea0</span>]</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> Calling getthroughput RPC function end</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> reply[<span class="number">0xfffffffff000dea0</span>]</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> ------------<span class="number">-1</span></span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> ------------<span class="number">-10</span></span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> start nc_reply_get_type</span><br><span class="line">netopeer-server[<span class="number">9196</span>]: <span class="number">9196</span>-V  <span class="number">1</span><span class="number">-15</span> <span class="number">15</span>:<span class="number">22</span>:<span class="number">59</span> -<span class="number">-2</span> nc_reply_get_type, reply[<span class="number">0xfffffffff000dea0</span>]</span><br></pre></td></tr></table></figure></p>
+<p>从上面的reply打印来看，在函数ncxml_reply_no_data_ns()return之前reply为地址为0x7feaf000dea0，return之后reply地址为0xfffffffff000dea0，发现地址被截短了。通过查阅资料<a href="http://blog.csdn.net/hiccupzhu/article/details/21326923" target="_blank" rel="noopener">关于64位机指针返回截短问题</a>，然后我看了编译过程，确实发现了这样了一个告警ncxml_reply_no_data_ns() warning：assignment makes pointer from integer without a cast。</p>
+<p>得出结论：<br><em>在头文件中没有声明这个函数，只是在C文件中实现了，编译器生成了默认声明，并默认返回值为 integer。</em></p>
+<h4 id="warning解决方法"><a href="#warning解决方法" class="headerlink" title="warning解决方法"></a>warning解决方法</h4><p>在<strong>小背景</strong>中提到过当前的编译环境，我在VM2上libnetconf编译，然后编译cloudvpn需要将libnetconf.so放在VM3上面，结果没有放messages_xml.h【这个头文件有ncxml_reply_no_data()函数原型声明】，就导致编译cloudvpn.so的时候，出现的warning，从而导致调用ncxml_reply_no_data()函数宕机。</p>
+<p>拨云见日，雨过天晴，至此所有问题全部解决。</p>
+<h3 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h3><p>这个问题确实解决了好几天，在刚开始解决这个问题的时候，其实还走了其他的一些弯路。现在想起来，都是由于没有查看netconf的协议标准，才导致多浪费了好长时间，如果当时查看了RFC后，问题就很明朗了，这样就会少走一些弯路。<br><br>可是现实没有如果，那么就需要平时在解决问题的问题，多思考，多动手，”==大胆猜想，小心求证==“，这是我刚入门的时候，我师父说给我的，我当谨记于心。</p>
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">John Doe</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/lixiangyong" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:spacewavexy@hotmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于使用libnetconf自定义RPC的问题记录"><span class="nav-number">1.</span> <span class="nav-text">关于使用libnetconf自定义RPC的问题记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-SDN-C采集性能数据失败"><span class="nav-number">1.1.</span> <span class="nav-text">1. SDN-C采集性能数据失败</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下发的rpc消息："><span class="nav-number">1.1.1.</span> <span class="nav-text">下发的rpc消息：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回的rpc-reply消息"><span class="nav-number">1.1.2.</span> <span class="nav-text">返回的rpc-reply消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回的错误："><span class="nav-number">1.1.3.</span> <span class="nav-text">返回的错误：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分析："><span class="nav-number">1.1.4.</span> <span class="nav-text">分析：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#libnetconf提供的reply的接口："><span class="nav-number">1.1.4.1.</span> <span class="nav-text">libnetconf提供的reply的接口：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#背景："><span class="nav-number">1.1.4.2.</span> <span class="nav-text">背景：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试："><span class="nav-number">1.1.4.3.</span> <span class="nav-text">测试：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data在RPC里output中是否需要？"><span class="nav-number">1.1.4.4.</span> <span class="nav-text">data在RPC里output中是否需要？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法1："><span class="nav-number">1.1.5.</span> <span class="nav-text">解决方法1：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法2："><span class="nav-number">1.1.6.</span> <span class="nav-text">解决方法2：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#小背景："><span class="nav-number">1.1.6.1.</span> <span class="nav-text">小背景：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#netopeer-server宕机问题："><span class="nav-number">1.1.6.2.</span> <span class="nav-text">netopeer-server宕机问题：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#warning解决方法"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">warning解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结束语"><span class="nav-number">1.1.7.</span> <span class="nav-text">结束语</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
